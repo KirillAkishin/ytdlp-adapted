@@ -173,12 +173,12 @@ def download_video_simple(url, output_path='.', proxy=None):
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
 
-def download_video(url, archive_file='/home/admin/Downloads/downloaded_archive.txt', proxy=None):
+def download_video(url, archive_file='~/Downloads/downloaded_archive.txt', proxy=None):
     if not os.path.exists(archive_file):
         open(archive_file, 'a').close()
     ydl_opts = {
         'format': 'best',
-        'outtmpl': '/home/admin/Downloads/%(title)s.%(ext)s',
+        'outtmpl': '~/Downloads/%(title)s.%(ext)s',
         'download_archive': archive_file, # Specify the archive file
         'ignoreerrors': True, # Continue if some videos fail
         'verbose': False # Set to True for more detailed output
@@ -210,7 +210,7 @@ if __name__ == '__main__':
     url_video = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
     # url_example = 'https://example.com'
     url_example = "http://ifconfig.me"
-    output_path = '/home/admin/Downloads/test_dir'
+    output_path = '~/Downloads/test_dir'
 
     for proxy in proxy_generator(expiration=15):
         print(f"try proxy: {proxy}", end='\t')
