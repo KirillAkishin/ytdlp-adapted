@@ -18,3 +18,4 @@ if __name__ == '__main__':
         download_video_simple(url_video, output_path=output_path, proxy=proxy.split("://")[1])
         # resp = get_request(url=url_example, http_proxy_address=proxy.split("://")[1])
         time.sleep(0.1)
+ 
