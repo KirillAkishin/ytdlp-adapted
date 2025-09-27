@@ -24,3 +24,14 @@ def resolve_path(path_str: str) -> Path:
     expanded_user = Path(expanded_vars).expanduser()
     absolute_path = expanded_user.resolve()
     return absolute_path
+
+def touch_file(filename: str):
+    """
+    Linux `touch` command
+    """
+
+    try:
+        with open(filename, 'a'):
+            os.utime(filename, None) 
+    except OSError as e:
+        logging.debug(f"Error touching file {filename}: {e}")

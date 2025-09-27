@@ -3,7 +3,7 @@ from tqdm import tqdm
 import random
 import requests
 import time
-from common import when_modified, duration_calculator, resolve_path
+from common import when_modified, duration_calculator, resolve_path, touch_file
 
 def get_request(url="https://example.com", timeout=5, http_proxy=None, **kwargs):
     if http_proxy:
@@ -110,15 +110,16 @@ def get_one_proxy(proxy_file:str="~/.proxies_test.txt", expiration:int=10, force
     return random.choice(proxy_pool)
 
 def proxy_generator(proxy_file:str="~/.proxies_test.txt", expiration:int=10, repetitions: int | bool = True):
-    file_path = resolve_path(proxy_file)
-
+    proxy_path = resolve_path(proxy_file)
+    touch_file(proxy_path)
+    
     def gen():
-        dt_mod = when_modified(file_path)
+        dt_mod = when_modified(proxy_path)
         dt_mod_passed = duration_calculator(dt_mod)
         if abs(dt_mod_passed.total_seconds()) > expiration*60:
             logging.info("Proxy pool mining.")
             get_proxies()
-        with open(file_path, "r") as f:
+        with open(proxy_path, "r") as f:
             for line in f:
                 yield line.strip()
 
