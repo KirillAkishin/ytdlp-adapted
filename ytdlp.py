@@ -13,16 +13,26 @@ def download_video_simple(url, output_path='.', proxy=None):
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
 
-def download_video(url, archive_file='~/Downloads/downloaded_archive.txt', proxy=None):
-    if not os.path.exists(archive_file):
-        open(archive_file, 'a').close()
-    ydl_opts = {
-        'format': 'best',
-        'outtmpl': '~/Downloads/%(title)s.%(ext)s',
-        'download_archive': archive_file, # Specify the archive file
-        'ignoreerrors': True, # Continue if some videos fail
-        'verbose': False # Set to True for more detailed output
+def download_video(url, output_path='.', preset='best', proxy=None):
+    download_archive = os.path.join(output_path, "downloaded_archive.txt") 
+    outtmpl = os.path.join(output_path, "%(title)s.%(ext)s")    
+    opts_dict = {
+        'best': {
+            'merge_output_format': 'mp4',
+            'format': 'bestvideo+bestaudio/best',
+            'outtmpl': outtmpl,
+        },
+        'test': {
+            'format': 'best',
+            'outtmpl': outtmpl,
+            'download_archive': download_archive, # Exclude the listed files from downloading
+            'ignoreerrors': True, # Continue if some videos fail
+            'verbose': False 
+        }
     }
+    if not os.path.exists(download_archive):
+        open(download_archive, 'a').close()
+    ydl_opts = opts_dict[preset]
     if proxy:
         ydl_opts['proxy'] = proxy
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -31,7 +41,7 @@ def download_video(url, archive_file='~/Downloads/downloaded_archive.txt', proxy
             video_id = info_dict.get('id')
 
             # Check if the video ID is in the archive file
-            with open(archive_file, 'r') as f:
+            with open(download_archive, 'r') as f:
                 if video_id in f.read():
                     print(f"Video '{info_dict.get('title')}' (ID: {video_id}) already downloaded. Skipping.")
                     return True
